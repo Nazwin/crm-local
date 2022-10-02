@@ -18,12 +18,12 @@
             <thead>
             <tr>
                 <th scope="col">#</th>
-                <th scope="col">Header</th>
-                <th scope="col">Header</th>
-                <th scope="col">Header</th>
-                <th scope="col">Header</th>
-                <th scope="col">Header</th>
-                <th scope="col">Header</th>
+                <th scope="col">Name</th>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Status</th>
+                <th scope="col">Project</th>
+                <th scope="col">Actions</th>
             </tr>
             </thead>
             <tbody>

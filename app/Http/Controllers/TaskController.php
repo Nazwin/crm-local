@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\EmailNewTask;
 use App\Models\Project;
 use App\Models\Task;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class TaskController extends Controller
@@ -67,8 +69,10 @@ class TaskController extends Controller
     public function edit($id)
     {
         $task = Task::find($id);
+        $users = User::all();
+        $projects = Project::all();
 
-        return view('pages.tasks_edit', compact('task'));
+        return view('pages.tasks_edit', compact(['task', 'users', 'projects']));
     }
 
     /**
@@ -76,11 +80,33 @@ class TaskController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+           'name' => 'required|string',
+           'description' => 'required|string',
+           'status' => 'required|string',
+            'project_id' => 'required|integer',
+            'user_id' => 'required|array',
+            'user_id.*' => 'integer',
+        ]);
+
+        $data = $request->all();
+
+        $task = Task::updateOrCreate([
+            'id' => $id
+        ], [
+            'name' => $data['name'],
+            'description' => $data['description'],
+            'status' => $data['status'],
+            'project_id' => $data['project_id']
+        ]);
+        $task->users()->sync($data['user_id']);
+
+//        EmailNewTask::dispatch($task);
+
+        return redirect()->route('tasks.index')->with('message', 'Success');
     }
 
     /**
